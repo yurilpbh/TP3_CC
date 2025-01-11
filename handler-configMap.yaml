@@ -17,6 +17,6 @@ kind: ConfigMap
 metadata:
   creationTimestamp: "2025-01-11T21:31:13Z"
   name: pyfile
-  namespace: default
+  namespace: yuripereira-tp3
   resourceVersion: "15280920"
   uid: 456a73e0-57a9-40f0-a108-8d0aaaaa5ade
