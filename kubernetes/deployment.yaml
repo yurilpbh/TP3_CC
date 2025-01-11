@@ -21,7 +21,7 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 300Mi
+            memory: 250Mi
         volumeMounts:
         - name: pyfile
           mountPath: "/opt/usermodule.py"
