@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: serverless-redis
-  namespace: yuripereira-tp3
+  namespace: yuripereira
 spec:
   replicas: 1
   selector:
