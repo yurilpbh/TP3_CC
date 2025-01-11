@@ -1,10 +1,7 @@
 apiVersion: v1
-data:
-  REDIS_OUTPUT_KEY: yuripereira-proj3-output
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2025-01-11T21:33:25Z"
   name: outputkey
   namespace: yuripereira
-  resourceVersion: "15281766"
-  uid: 9e2abe12-c4e8-4b66-b5fa-810b8d637eff
+data:
+  REDIS_OUTPUT_KEY: yuripereira-proj3-output

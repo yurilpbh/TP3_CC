@@ -1,4 +1,8 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pyfile
+  namespace: yuripereira
 data:
   pyfile: "import json, statistics\n\ndef handler(input: dict, context: object) ->
     dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(input['virtual_memory-buffers']/input['virtual_memory-total'],
@@ -13,10 +17,3 @@ data:
     \                   metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0\n            else:\n
     \               env[f'cpu-window-{cpu_number}'] = [input[key]]\n                metrics[f'avg-util-cpu{cpu_number}-60sec']
     = 0\n    \n    context['env'] = env\n\n    return metrics"
-kind: ConfigMap
-metadata:
-  creationTimestamp: "2025-01-11T21:31:13Z"
-  name: pyfile
-  namespace: yuripereira
-  resourceVersion: "15280920"
-  uid: 456a73e0-57a9-40f0-a108-8d0aaaaa5ade
