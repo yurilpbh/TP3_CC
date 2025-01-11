@@ -4,10 +4,11 @@ def handler(input: dict, context: object) -> dict[str, any]:
     metrics = {}
     metrics['percent-network-egress'] = round(input['virtual_memory-buffers']/input['virtual_memory-total'], 2)
     metrics['percent-memory-caching'] = round(input['virtual_memory-cached']/input['virtual_memory-total'], 2)
-    if 'execution_time' not in context:
+    print(context)
+    if context.execution_time is None:
         avg_window = 60/5
     else:
-        avg_window = 60/context['execution_time']
+        avg_window = 60/context.execution_time
     env = json.loads(context['env'])
     for key in input.keys():
         if 'cpu_percent-' in key:
