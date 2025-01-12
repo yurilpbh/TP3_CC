@@ -4,7 +4,7 @@ metadata:
   name: pyfile
   namespace: yuripereira
 data:
-  pyfile: "import json, statistics\n\ndef handler(input: dict, context: object) ->
+  pyfile: "import json, statistics, redis\n\ndef handler(input: dict, context: object) ->
     dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(input['virtual_memory-buffers']/input['virtual_memory-total'],
     2)\n    metrics['percent-memory-caching'] = round(input['virtual_memory-cached']/input['virtual_memory-total'],
     2)\n    if not hasattr(context, 'execution_time'):\n        avg_window = 60/5\n    else:\n
@@ -16,4 +16,4 @@ data:
     = round(statistics.mean(env[f'cpu-window-{cpu_number}']), 2)\n                else:\n
     \                   metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0\n            else:\n
     \               env[f'cpu-window-{cpu_number}'] = [input[key]]\n                metrics[f'avg-util-cpu{cpu_number}-60sec']
-    = 0\n    \n    context.env = env\n\n    print(metrics)\n    return metrics"
+    = 0\n    \n    context.env = env\n\n    print(metrics)\n    r=redis.Redis(host='http://67.159.94.11', port=6379)\n    print(r.get('yuripereira-proj3-output'))\n    return metrics"
