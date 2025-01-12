@@ -8,7 +8,7 @@ data:
     dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(input['virtual_memory-buffers']/input['virtual_memory-total'],
     2)\n    metrics['percent-memory-caching'] = round(input['virtual_memory-cached']/input['virtual_memory-total'],
     2)\n    print(context)\n    if not hasattr(context, 'execution_time'):\n        avg_window = 60/5\n    else:\n
-    \       avg_window = 60/context.execution_time\n    env = json.loads(context.env)\n
+    \       avg_window = 60/context.execution_time\n    env = context.env\n
     \   for key in input.keys():\n        if 'cpu_percent-' in key:\n            cpu_number
     = key.split('-')[1]\n            if f'cpu-window-{cpu_number}' in env:\n                env[f'cpu-window-{cpu_number}'].append(input[key])\n
     \               if len(env[f'cpu-window-{cpu_number}']) == avg_window + 1:\n                    env[f'cpu-window-{cpu_number}'].pop(0)\n
