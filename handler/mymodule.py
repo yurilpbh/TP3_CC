@@ -9,7 +9,7 @@ def handler(input: dict, context: object) -> dict[str, any]:
         avg_window = 60/5
     else:
         avg_window = 60/context.execution_time
-    env = json.loads(context.env)
+    env = context.env
     for key in input.keys():
         if 'cpu_percent-' in key:
             cpu_number = key.split('-')[1]
@@ -26,5 +26,6 @@ def handler(input: dict, context: object) -> dict[str, any]:
                 metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0
     
     context.env = env
-
+    print(metrics)
+    print(env)
     return metrics
