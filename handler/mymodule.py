@@ -1,4 +1,4 @@
-import json, statistics
+import statistics
 
 def handler(input: dict, context: object) -> dict[str, any]:
     metrics = {}
@@ -24,6 +24,5 @@ def handler(input: dict, context: object) -> dict[str, any]:
                 metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0
     
     context.env = env
-    print(metrics)
-    print(env)
+    
     return metrics

@@ -1,38 +1,91 @@
-from dash import Dash, dash_table, dcc, callback, Output, Input
 import pandas as pd
 import plotly.express as px
 import dash_mantine_components as dmc
+import redis
+import json
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
+from dash import Dash, dcc, callback, Output, Input, State
 
 app = Dash()
 
-app.layout = dmc.Container([
-    dmc.Title('My First App with Data, Graph, and Controls', color="blue", size="h3"),
-    dmc.RadioGroup(
-            [dmc.Radio(i, value=i) for i in  ['pop', 'lifeExp', 'gdpPercap']],
-            id='my-dmc-radio-item',
-            value='lifeExp',
-            size="sm"
-        ),
-    dmc.Grid([
-        dmc.Col([
-            dash_table.DataTable(data=df.to_dict('records'), page_size=12, style_table={'overflowX': 'auto'})
-        ], span=6),
-        dmc.Col([
-            dcc.Graph(figure={}, id='graph-placeholder')
-        ], span=6),
-    ]),
 
-], fluid=True)
+def get_data_from_redis():
+    r = redis.Redis(host='localhost', port=6379)
+    json_metrics = json.loads(r.get('yuripereira-proj3-output').decode())
+    return pd.DataFrame([json_metrics])
+
+
+def get_new_df(redis_df, last_figure):
+    if last_figure is None:
+        return redis_df
+    else:
+        dict_append = {}
+        for data in last_figure['data']:
+            y = data['y']
+            y.append(redis_df[data['name']][0])
+            dict_append[data['name']] = y
+
+    return pd.DataFrame.from_dict(dict_append, orient='index').transpose()
+
+
+app.layout = dmc.Container(
+    [
+        dmc.Title('Resource usage analysis', color="black", size="h2", align="center"),
+        dmc.Grid(
+            [
+                dmc.Col([dcc.Graph(id='network-egress')], span=6),
+                dmc.Col([dcc.Graph(id='memory-caching')], span=6),
+            ]
+        ),
+        dmc.Grid([dmc.Col([dcc.Graph(id='avg-util-cpu')], span=12)]),
+        dcc.Interval(id='interval-component', interval=2000),
+    ],
+    fluid=True,
+)
+
 
 @callback(
-    Output(component_id='graph-placeholder', component_property='figure'),
-    Input(component_id='my-dmc-radio-item', component_property='value')
+    Output('network-egress', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('network-egress', 'figure'),
 )
-def update_graph(col_chosen):
-    fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    redis_df = redis_df[['percent-network-egress']]
+    new_df = get_new_df(redis_df, last_figure)
+
+    fig = px.line(new_df)
     return fig
 
+
+@callback(
+    Output('memory-caching', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('memory-caching', 'figure'),
+)
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    redis_df = redis_df[['percent-memory-caching']]
+    new_df = get_new_df(redis_df, last_figure)
+
+    fig = px.line(new_df)
+    return fig
+
+
+@callback(
+    Output('avg-util-cpu', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('avg-util-cpu', 'figure'),
+)
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    del redis_df['percent-memory-caching']
+    del redis_df['percent-network-egress']
+    new_df = get_new_df(redis_df, last_figure)
+
+    fig = px.line(new_df)
+    return fig
+
+
 if __name__ == '__main__':
-    app.run_server(debug=True, port=52128)
+    app.run(debug=True)
