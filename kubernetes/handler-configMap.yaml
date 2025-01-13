@@ -16,4 +16,4 @@ data:
     = round(statistics.mean(env[f'cpu-window-{cpu_number}']), 2)\n                else:\n
     \                   metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0\n            else:\n
     \               env[f'cpu-window-{cpu_number}'] = [input[key]]\n                metrics[f'avg-util-cpu{cpu_number}-60sec']
-    = 0\n    \n    context.env = env\n\n    print(metrics)\n    r=redis.Redis(host='67.159.94.11', port=6379)\n    print(r.get('yuripereira-proj3-output'))\n    return metrics"
+    = 0\n    \n    context.env = env\n\n    print(metrics)\n    r=redis.Redis(host='192.168.121.48', port=6379)\n    print(r.get('yuripereira-proj3-output'))\n    return metrics"
