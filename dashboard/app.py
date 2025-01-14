@@ -1,81 +1,94 @@
-import pandas as pd, os, json, datetime
+import pandas as pd
+import plotly.express as px
+import dash_mantine_components as dmc
+import redis
+import json
 
-from pydantic import BaseModel
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from dash import Dash, dcc, callback, Output, Input, State
+from flask_cors import CORS
+
+app = Dash()
+
+CORS(app.server)
 
 
-class Song(BaseModel):
-    songs: list
+def get_data_from_redis():
+    r = redis.Redis(host='192.168.121.187', port=6379)
+    json_metrics = json.loads(r.get('yuripereira-proj3-output').decode())
+    return pd.DataFrame([json_metrics])
 
 
-app = FastAPI()
+def get_new_df(redis_df, last_figure):
+    if last_figure is None:
+        return redis_df
+    else:
+        dict_append = {}
+        for data in last_figure['data']:
+            y = data['y']
+            y.append(redis_df[data['name']][0])
+            dict_append[data['name']] = y
 
-origins = [
-    "*",
-]
+    return pd.DataFrame.from_dict(dict_append, orient='index').transpose()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+
+app.layout = dmc.Container(
+    [
+        dmc.Title('Resource usage analysis', color="black", size="h2", align="center"),
+        dmc.Grid(
+            [
+                dmc.Col([dcc.Graph(id='network-egress')], span=6),
+                dmc.Col([dcc.Graph(id='memory-caching')], span=6),
+            ]
+        ),
+        dmc.Grid([dmc.Col([dcc.Graph(id='avg-util-cpu')], span=12)]),
+        dcc.Interval(id='interval-component', interval=2000),
+    ],
+    fluid=True,
 )
 
 
-@app.get("/")
-async def root():
-    return {"message": "Get recommended songs"}
+@callback(
+    Output('network-egress', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('network-egress', 'figure'),
+)
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    redis_df = redis_df[['percent-network-egress']]
+    new_df = get_new_df(redis_df, last_figure)
+
+    fig = px.line(new_df)
+    return fig
 
 
-@app.post("/get_recommendation")
-def get_recommendation(data: Song):
-    songs = data.songs
-    filename = '/dataset/csv_model.csv'
-    if os.path.isfile(filename):
-        file_date = os.path.getctime(filename)
-        file_date = datetime.date.fromtimestamp(file_date)
-    version_file = '/dataset/model_version.json'
-    version = 0
-    with open(version_file, 'r') as file:
-        json_version = json.load(file)
-        version = json_version['version']
-    df = pd.read_csv(filename)
-    songs_recommendation = []
-    df_recommendation = pd.DataFrame()
-    songs_choosed = []
-    for song in songs:
-        song = song.lower()
-        df_songs = df[df['antecedents'].str.lower() == song]
-        df_recommendation = pd.concat([df_recommendation, df_songs])
-        songs_recommendation.append(df_songs['consequents'].tolist())
-        songs_choosed.append(song)
-    
-    # Use set intersection to find common elements
-    common_elements = set(songs_recommendation[0])
-    for sublist in songs_recommendation[1:]:
-        common_elements &= set(sublist)
-        
-    for song in common_elements:
-        songs_choosed.append(song.lower())
-        
-    if len(common_elements) < 5:
-        df = df[~df['consequents'].str.lower().isin(songs_choosed)]
-        common_elements.update(df.sort_values('consequent support', ascending=False)['consequents'].drop_duplicates()[0:(5-len(common_elements))].to_list())
+@callback(
+    Output('memory-caching', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('memory-caching', 'figure'),
+)
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    redis_df = redis_df[['percent-memory-caching']]
+    new_df = get_new_df(redis_df, last_figure)
 
-        return {
-                "songs": common_elements,
-                "version": version,
-                "model_date": file_date,
-            }
-    else:
-        return {
-            "songs": list(common_elements)[0:5],
-            "version": version,
-            "model_date": file_date,
-        }
+    fig = px.line(new_df)
+    return fig
+
+
+@callback(
+    Output('avg-util-cpu', 'figure'),
+    Input('interval-component', 'n_intervals'),
+    State('avg-util-cpu', 'figure'),
+)
+def update_metrics(n, last_figure):
+    redis_df = get_data_from_redis()
+    del redis_df['percent-memory-caching']
+    del redis_df['percent-network-egress']
+    new_df = get_new_df(redis_df, last_figure)
+
+    fig = px.line(new_df)
+    return fig
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port="52064", host="0.0.0.0")
