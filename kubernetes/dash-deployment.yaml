@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yuripereira-dash-deployment
+  namespace: yuripereira
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: yuripereira-dash
+  template:
+    metadata:
+      labels:
+        app: yuripereira-dash
+    spec:
+      containers:
+      - name: yuripereira-dash
+        image: quay.io/yurilpbh/tp3_dash:v0.0.1
+        ports:
+        - containerPort: 5264

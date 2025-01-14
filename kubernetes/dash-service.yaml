@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: yuripereira-dash-service
+  namespace: yuripereira
+spec:
+  selector:
+    app: yuripereira-dash
+  ports:
+    - protocol: TCP
+      port: 52064
+      targetPort: 5264
+      nodePort: 52064
+  type: NodePort
