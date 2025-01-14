@@ -23,5 +23,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy the source code into the container.
 COPY . .
 
+EXPOSE 52064
+
 # Run the application.
 CMD ["python", "app.py"]
