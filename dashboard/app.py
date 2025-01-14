@@ -5,8 +5,11 @@ import redis
 import json
 
 from dash import Dash, dcc, callback, Output, Input, State
+from flask_cors import CORS
 
 app = Dash()
+server = app.server
+CORS(server, origins=['*'])
 
 
 def get_data_from_redis():

@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: yuripereira-dash
-        image: quay.io/yurilpbh/tp3_dash:v0.0.1
+        image: quay.io/yurilpbh/tp3_dash:v0.0.2
         ports:
         - containerPort: 5264
