@@ -7,4 +7,4 @@ services:
     build:
       context: .
     ports:
-      - 52064:52064
+      - 52064:8050
