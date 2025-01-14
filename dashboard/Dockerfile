@@ -26,4 +26,4 @@ COPY . .
 EXPOSE 52064
 
 # Run the application.
-CMD ["python", "app.py"]
+CMD ["uvicorn", "app:app", "--port=52064"]
