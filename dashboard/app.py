@@ -10,7 +10,7 @@ app = Dash()
 
 
 def get_data_from_redis():
-    r = redis.Redis(host='localhost', port=6379)
+    r = redis.Redis(host='192.168.121.187', port=6379)
     json_metrics = json.loads(r.get('yuripereira-proj3-output').decode())
     return pd.DataFrame([json_metrics])
 
