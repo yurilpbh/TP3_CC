@@ -26,4 +26,4 @@ COPY . .
 EXPOSE 52064
 
 # Run the application.
-CMD ["uvicorn", "app:app", "--port=52064"]
+CMD ["uvicorn", "app:app", "--host=0.0.0.0", "--port=52064"]
