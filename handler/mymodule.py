@@ -4,6 +4,7 @@ def handler(input: dict, context: object) -> dict[str, any]:
     metrics = {}
     metrics['percent-network-egress'] = round(input['virtual_memory-buffers']/input['virtual_memory-total'], 2)
     metrics['percent-memory-caching'] = round(input['virtual_memory-cached']/input['virtual_memory-total'], 2)
+    print(context)
     if not hasattr(context, 'monitoring_interval'):
         avg_window = 60/5
     else:
