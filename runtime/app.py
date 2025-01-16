@@ -79,6 +79,8 @@ while True:
             log(traceback.format_exc())
     if count == 0:
         log(context.monitoring_interval)
+        context.monitoring_interval = 10
+        log(context.monitoring_interval)
     count += 1
     time.sleep(context.monitoring_interval)
     

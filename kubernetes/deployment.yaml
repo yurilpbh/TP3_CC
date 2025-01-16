@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: serverless-redis
-        image: quay.io/yurilpbh/tp3_runtime:v0.0.1
+        image: quay.io/yurilpbh/tp3_runtime:latest
         imagePullPolicy: Always
         resources:
           requests:
