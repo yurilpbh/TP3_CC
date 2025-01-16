@@ -48,4 +48,4 @@ spec:
           name: pyfile
       - name: env
         configMap:
-          name: env
+          name: pyfile
