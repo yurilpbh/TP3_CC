@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: serverless-redis
-        image: lucasmsp/serverless:redis
+        image: quay.io/yurilpbh/tp3_runtime:v0.0.1
         imagePullPolicy: Always
         resources:
           requests:
@@ -27,6 +27,9 @@ spec:
         - name: pyfile
           mountPath: "/opt/usermodule.py"
           subPath: pyfile
+        - name: env
+          mountPath: "/opt/.env"
+          subPath: env
         env:
         - name: REDIS_HOST
           value: "192.168.121.187"
@@ -43,3 +46,6 @@ spec:
       - name: pyfile
         configMap:
           name: pyfile
+      - name: env
+        configMap:
+          name: env
