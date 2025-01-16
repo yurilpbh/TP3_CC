@@ -60,7 +60,7 @@ while True:
         log("Data not available yet!")
         log(traceback.format_exc())
     if count == 0:
-        log(context['env'])
+        log(context.env)
     if data:
 
        try:
@@ -79,7 +79,7 @@ while True:
             log("Error while trying to save result")
             log(traceback.format_exc())
     if count == 0:
-        log(context['env'])
+        log(context.env)
     count += 1
     time.sleep(context.monitoring_interval)
     
