@@ -27,11 +27,11 @@ if not REDIS_OUTPUT_KEY:
     log("ENV `REDIS_OUTPUT_KEY` not informed. Any output will not be sent to Redis.")
     log(os.environ)
 
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+# from dotenv import load_dotenv, find_dotenv
+# load_dotenv(find_dotenv())
 
-REDIS_INPUT_KEY = os.getenv('REDIS_INPUT_KEY', None)
-log(REDIS_INPUT_KEY)
+REDIS_INPUT_KEY = os.getenv('REDIS_INPUT_KEY', 'metrics')
+# log(REDIS_INPUT_KEY)
 
 if not REDIS_INPUT_KEY:
     log("Please inform `REDIS_INPUT_KEY` at .env file")
@@ -56,17 +56,20 @@ while True:
     output = None
     try:
         data = context.get_data()
+        if count == 0:
+            log(data)
     except:
         log("Data not available yet!")
         log(traceback.format_exc())
     if count == 0:
         log(context.env)
+    
     if data:
-
        try:
            data = json.loads(data)
            output = lf.handler(data, context)
-           
+           if count == 0:
+                log(output)
        except:
             log("Error in Serverless function. Please check your `handler` method in usermodule.py")
             log(traceback.format_exc())

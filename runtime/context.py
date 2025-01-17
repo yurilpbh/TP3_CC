@@ -3,6 +3,10 @@ import datetime
 import redis
 
 class Context(object):
+    
+    """
+    Context Object
+    """
     host = None
     port = None
     input_key = None
@@ -19,8 +23,8 @@ class Context(object):
         tmp = os.path.getmtime("/opt/usermodule.py")
         self.function_getmtime = datetime.datetime.fromtimestamp(tmp).strftime('%Y-%m-%d %H:%M:%S')
         self.last_execution = None
-        self.env = {}
         self.r_server = redis.Redis(host=host, port=port, charset="utf-8", decode_responses=True)
+        self.env = {}
 
     def confirm_execution(self):
         self.last_execution = datetime.datetime.now()
@@ -53,4 +57,5 @@ class Context(object):
         :param function_getmtime: Timestamp of last update in usermodule file
         :param last_execution: Timestamp of last confirmed execution (and store)
         :param env: Dictionary to be used as context
+        :param monitoring_interval: Time to wait before execute handler again
         """)
