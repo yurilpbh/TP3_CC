@@ -25,6 +25,7 @@ class Context(object):
         self.last_execution = None
         self.r_server = redis.Redis(host=host, port=port, charset="utf-8", decode_responses=True)
         self.env = {}
+        self.set_interval(10)
 
     def confirm_execution(self):
         self.last_execution = datetime.datetime.now()

@@ -27,11 +27,10 @@ if not REDIS_OUTPUT_KEY:
     log("ENV `REDIS_OUTPUT_KEY` not informed. Any output will not be sent to Redis.")
     log(os.environ)
 
-# from dotenv import load_dotenv, find_dotenv
-# load_dotenv(find_dotenv())
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 REDIS_INPUT_KEY = os.getenv('REDIS_INPUT_KEY', 'metrics')
-# log(REDIS_INPUT_KEY)
 
 if not REDIS_INPUT_KEY:
     log("Please inform `REDIS_INPUT_KEY` at .env file")
@@ -50,6 +49,7 @@ log("Environment is loaded. Starting Serverless function execution...")
 from context import Context
 context = Context(host=REDIS_HOST, port=REDIS_PORT,
                   input_key=REDIS_INPUT_KEY, output_key=REDIS_OUTPUT_KEY)
+context.set_interval(10)
 count = 0
 while True:
     data = None
