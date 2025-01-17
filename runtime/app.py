@@ -58,15 +58,11 @@ while True:
     except:
         log("Data not available yet!")
         log(traceback.format_exc())
-    if count <= 5:
-        log(context.env)
     
     if data:
        try:
            data = json.loads(data)
            output = lf.handler(data, context)
-           if count <= 5:
-                log(output)
        except:
             log("Error in Serverless function. Please check your `handler` method in usermodule.py")
             log(traceback.format_exc())
@@ -78,8 +74,7 @@ while True:
        except:
             log("Error while trying to save result")
             log(traceback.format_exc())
-    if count <= 5:
-        log(context.env)
+            
     count += 1
     time.sleep(context.monitoring_interval)
     

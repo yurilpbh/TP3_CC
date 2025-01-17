@@ -36,10 +36,7 @@ class Context(object):
         self.input_key = input_key
         
     def set_interval(self, monitoring_interval):
-        print(self.monitoring_interval)
-        print(monitoring_interval)
         self.monitoring_interval = monitoring_interval
-        print(self.monitoring_interval)
         
     def get_data(self):
         return self.r_server.get(self.input_key)
