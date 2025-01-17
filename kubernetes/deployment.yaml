@@ -25,10 +25,10 @@ spec:
             memory: 250M
         volumeMounts:
         - name: pyfile
-          mountPath: "/opt/usermodule.py"
+          mountPath: "/runtime/usermodule.py"
           subPath: pyfile
         - name: env
-          mountPath: "/opt/.env"
+          mountPath: "/runtime/.env"
           subPath: env
         env:
         - name: REDIS_HOST
