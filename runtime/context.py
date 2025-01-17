@@ -20,7 +20,7 @@ class Context(object):
         self.port = port
         self.input_key = input_key
         self.output_key = output_key
-        tmp = os.path.getmtime("/opt/usermodule.py")
+        tmp = os.path.getmtime("/runtime/usermodule.py")
         self.function_getmtime = datetime.datetime.fromtimestamp(tmp).strftime('%Y-%m-%d %H:%M:%S')
         self.last_execution = None
         self.r_server = redis.Redis(host=host, port=port, charset="utf-8", decode_responses=True)
