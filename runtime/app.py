@@ -49,7 +49,6 @@ log("Environment is loaded. Starting Serverless function execution...")
 from context import Context
 context = Context(host=REDIS_HOST, port=REDIS_PORT,
                   input_key=REDIS_INPUT_KEY, output_key=REDIS_OUTPUT_KEY)
-context.set_interval(10)
 count = 0
 while True:
     data = None

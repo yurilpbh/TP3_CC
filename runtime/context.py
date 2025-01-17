@@ -25,7 +25,6 @@ class Context(object):
         self.last_execution = None
         self.r_server = redis.Redis(host=host, port=port, charset="utf-8", decode_responses=True)
         self.env = {}
-        self.set_interval(10)
 
     def confirm_execution(self):
         self.last_execution = datetime.datetime.now()
@@ -43,7 +42,7 @@ class Context(object):
         print(self.monitoring_interval)
         
     def get_data(self):
-        self.r_server.get(self.input_key)
+        return self.r_server.get(self.input_key)
         
     def set_data(self, data):
         self.r_server.set(self.output_key, data)
