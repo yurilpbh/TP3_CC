@@ -27,7 +27,7 @@ spec:
         volumeMounts:
         - name: zipfile
           mountPath: /runtime
-        - name: runtime
+        - name: user
           mountPath: /runtime/user
       containers:
       - name: serverless-redis
