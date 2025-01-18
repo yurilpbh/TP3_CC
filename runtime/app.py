@@ -41,7 +41,7 @@ directory_path = '/runtime/user'
 
 if os.path.isdir(directory_path):
     print("os path")
-    # sys.path.append(directory_path)
+    sys.path.append(directory_path)
     dir_module_loader = importlib.util.find_spec('mymodule')
 
 if not module_loader and not dir_module_loader:
