@@ -37,9 +37,6 @@ if not REDIS_INPUT_KEY:
 
 HANDLER_FUNCTION_NAME = os.getenv('HANDLER_FUNCTION_NAME', None)
 
-log(REDIS_INPUT_KEY)
-log(HANDLER_FUNCTION_NAME)
-
 module_loader = importlib.util.find_spec('usermodule')
 dir_module_loader = False
 directory_path = '/runtime/user'
