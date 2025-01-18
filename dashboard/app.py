@@ -3,9 +3,11 @@ import plotly.express as px
 import dash_mantine_components as dmc
 import redis
 import json
+from collections import deque
 
 from dash import Dash, dcc, callback, Output, Input, State
 from flask_cors import CORS
+from datetime import datetime
 
 app = Dash()
 
@@ -20,15 +22,31 @@ def get_data_from_redis():
 
 def get_new_df(redis_df, last_figure):
     if last_figure is None:
+        redis_df['timestamp'] = pd.to_datetime(redis_df['timestamp']).dt.strftime('%H:%M:%S')
         return redis_df
     else:
         dict_append = {}
+        x = last_figure['data'][0]['x']
+        x.append(datetime.strptime(redis_df['timestamp'][0], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M:%S"))
+        len_to_remove = 0
+        if len(set(x)) == 101:
+            x = deque(x)
+            value = x.popleft()
+            len_to_remove = x.count(value)
+            x = [x for x in x if x != value]
+        
         for data in last_figure['data']:
             y = data['y']
             y.append(redis_df[data['name']][0])
+            if len_to_remove != 0:
+                y = y[len_to_remove:]
+            
             dict_append[data['name']] = y
-
-    return pd.DataFrame.from_dict(dict_append, orient='index').transpose()
+        
+        dict_append['timestamp'] = x
+    df = pd.DataFrame.from_dict(dict_append, orient='index').transpose()
+    df_long = df.melt(id_vars="timestamp", var_name="variable", value_name="value")
+    return df_long
 
 
 app.layout = dmc.Container(
@@ -41,7 +59,7 @@ app.layout = dmc.Container(
             ]
         ),
         dmc.Grid([dmc.Col([dcc.Graph(id='avg-util-cpu')], span=12)]),
-        dcc.Interval(id='interval-component', interval=2000),
+        dcc.Interval(id='interval-component'),
     ],
     fluid=True,
 )
@@ -54,10 +72,10 @@ app.layout = dmc.Container(
 )
 def update_metrics(n, last_figure):
     redis_df = get_data_from_redis()
-    redis_df = redis_df[['percent-network-egress']]
+    redis_df = redis_df[['percent-network-egress', 'timestamp']]
     new_df = get_new_df(redis_df, last_figure)
-
-    fig = px.line(new_df)
+    
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
     return fig
 
 
@@ -68,10 +86,10 @@ def update_metrics(n, last_figure):
 )
 def update_metrics(n, last_figure):
     redis_df = get_data_from_redis()
-    redis_df = redis_df[['percent-memory-caching']]
+    redis_df = redis_df[['percent-memory-caching', 'timestamp']]
     new_df = get_new_df(redis_df, last_figure)
 
-    fig = px.line(new_df)
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
     return fig
 
 
@@ -86,7 +104,7 @@ def update_metrics(n, last_figure):
     del redis_df['percent-network-egress']
     new_df = get_new_df(redis_df, last_figure)
 
-    fig = px.line(new_df)
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
     return fig
 
 
