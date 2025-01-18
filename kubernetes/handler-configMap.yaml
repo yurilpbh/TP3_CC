@@ -17,7 +17,7 @@ data:
     \                   metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0\n            else:\n
     \               env[f'cpu-window-{cpu_number}'] = [input[key]]\n                metrics[f'avg-util-cpu{cpu_number}-60sec']
     = 0\n    \n    context.env = env\n\n    return metrics"
-  env: 
+  env: |
     REDIS_INPUT_KEY=metrics
     HANDLER_FUNCTION_NAME=main
   zipfile: |

@@ -29,13 +29,16 @@ if not REDIS_OUTPUT_KEY:
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
-REDIS_INPUT_KEY = os.getenv('REDIS_INPUT_KEY', 'metrics')
+REDIS_INPUT_KEY = os.getenv('REDIS_INPUT_KEY', None)
 
 if not REDIS_INPUT_KEY:
     log("Please inform `REDIS_INPUT_KEY` at .env file")
     exit(1)
 
 HANDLER_FUNCTION_NAME = os.getenv('HANDLER_FUNCTION_NAME', None)
+
+log(REDIS_INPUT_KEY)
+log(HANDLER_FUNCTION_NAME)
 
 module_loader = importlib.util.find_spec('usermodule')
 dir_module_loader = False
