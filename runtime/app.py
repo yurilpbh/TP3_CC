@@ -36,7 +36,10 @@ if not REDIS_INPUT_KEY:
     exit(1)
 
 HANDLER_FUNCTION_NAME = os.getenv('HANDLER_FUNCTION_NAME', None)
-
+if not HANDLER_FUNCTION_NAME:
+    log("Wasn't find a different name to handler function. Using default handler")
+    HANDLER_FUNCTION_NAME = 'handler'
+    
 module = importlib.import_module('usermodule')
 dir_module_loader = False
 directory_path = '/runtime/user'
