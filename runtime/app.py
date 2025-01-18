@@ -36,9 +36,15 @@ if not REDIS_INPUT_KEY:
 
 module_loader = importlib.util.find_spec('usermodule')
 dir_module_loader = False
-print(os.get_exec_path())
+
+log(os.path.isdir('runtime/user'))
+log(os.path.isdir('/runtime/user'))
+log(os.path.isdir('/user'))
+log(os.path.isdir('user'))
+log(os.path.isdir('user'))
 if os.path.isdir('/runtime/user'):
-    dir_module_loader = importlib.util.find_spec('runtime/user/usermodule')
+    log("dir exist")
+    dir_module_loader = importlib.util.find_spec('/runtime/user/usermodule')
 
 if not module_loader and not dir_module_loader:
     log("neither `usermodule` or `user dir` found!")
