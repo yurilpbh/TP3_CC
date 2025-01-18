@@ -6,6 +6,7 @@ import redis
 import os
 import importlib
 import time
+import sys
 
 from icecream import ic 
 
@@ -36,15 +37,12 @@ if not REDIS_INPUT_KEY:
 
 module_loader = importlib.util.find_spec('usermodule')
 dir_module_loader = False
+directory_path = '/runtime/user'
 
-log(os.path.isdir('runtime/user'))
-log(os.path.isdir('/runtime/user'))
-log(os.path.isdir('/user'))
-log(os.path.isdir('user'))
-log(os.path.isdir('user'))
-if os.path.isdir('/runtime/user'):
-    log("dir exist")
-    dir_module_loader = importlib.util.find_spec('/runtime/user/usermodule')
+if os.path.isdir(directory_path):
+    print("os path")
+    # sys.path.append(directory_path)
+    dir_module_loader = importlib.util.find_spec('mymodule')
 
 if not module_loader and not dir_module_loader:
     log("neither `usermodule` or `user dir` found!")
