@@ -23,7 +23,7 @@ def get_data_from_redis():
 def get_new_df(redis_df, last_figure):
     if last_figure is None:
         redis_df['timestamp'] = pd.to_datetime(redis_df['timestamp']).dt.strftime('%H:%M:%S')
-        return redis_df
+        df = redis_df
     else:
         dict_append = {}
         x = last_figure['data'][0]['x']
@@ -44,7 +44,8 @@ def get_new_df(redis_df, last_figure):
             dict_append[data['name']] = y
         
         dict_append['timestamp'] = x
-    df = pd.DataFrame.from_dict(dict_append, orient='index').transpose()
+        df = pd.DataFrame.from_dict(dict_append, orient='index').transpose()
+    
     df_long = df.melt(id_vars="timestamp", var_name="variable", value_name="value")
     return df_long
 
