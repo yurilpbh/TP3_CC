@@ -35,12 +35,13 @@ if not REDIS_INPUT_KEY:
     log("Please inform `REDIS_INPUT_KEY` at .env file")
     exit(1)
 
+HANDLER_FUNCTION_NAME = os.getenv('HANDLER_FUNCTION_NAME', None)
+
 module_loader = importlib.util.find_spec('usermodule')
 dir_module_loader = False
 directory_path = '/runtime/user'
 
 if os.path.isdir(directory_path):
-    print("os path")
     sys.path.append(directory_path)
     dir_module_loader = importlib.util.find_spec('mymodule')
 
@@ -49,11 +50,15 @@ if not module_loader and not dir_module_loader:
     exit(1)
 elif module_loader and dir_module_loader:
     log("finded both `usermodule` or `user dir`. Using files from `user dir`")
+
 module_loader = dir_module_loader
+handler = getattr(module_loader, HANDLER_FUNCTION_NAME, None)
 
-import usermodule as lf
-
-log("Environment is loaded. Starting Serverless function execution...")
+if callable(handler):
+    log("Environment is loaded. Starting Serverless function execution...")
+else:
+    log(f"Function '{HANDLER_FUNCTION_NAME}' not found in module '{module_loader}'.")
+    exit(1)
 
 from context import Context
 context = Context(host=REDIS_HOST, port=REDIS_PORT,
@@ -71,7 +76,7 @@ while True:
     if data:
        try:
            data = json.loads(data)
-           output = lf.handler(data, context)
+           output = handler(data, context)
        except:
             log("Error in Serverless function. Please check your `handler` method in usermodule.py")
             log(traceback.format_exc())
