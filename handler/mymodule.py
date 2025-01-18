@@ -1,4 +1,4 @@
-import statistics
+import utils
 
 def handler(input: dict, context: object) -> dict[str, any]:
     metrics = {}
@@ -17,7 +17,7 @@ def handler(input: dict, context: object) -> dict[str, any]:
                 env[f'cpu-window-{cpu_number}'].append(input[key])
                 if len(env[f'cpu-window-{cpu_number}']) == avg_window + 1:
                     env[f'cpu-window-{cpu_number}'].pop(0)
-                    metrics[f'avg-util-cpu{cpu_number}-60sec'] = round(statistics.mean(env[f'cpu-window-{cpu_number}']), 2)
+                    metrics[f'avg-util-cpu{cpu_number}-60sec'] = utils.calc_avg_cpu(env[f'cpu-window-{cpu_number}'])
                 else:
                     metrics[f'avg-util-cpu{cpu_number}-60sec'] = 0
             else:

@@ -3,10 +3,6 @@ import datetime
 import redis
 
 class Context(object):
-    
-    """
-    Context Object
-    """
     host = None
     port = None
     input_key = None

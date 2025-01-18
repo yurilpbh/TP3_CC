@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import traceback
 import datetime
 import json
@@ -37,10 +35,15 @@ if not REDIS_INPUT_KEY:
     exit(1)
 
 module_loader = importlib.util.find_spec('usermodule')
+if os.path.isdir('/user'):
+    dir_module_loader = importlib.util.find_spec('user/usermodule')
 
-if not module_loader:
-    log("`usermodule` not found!")
+if not module_loader and not dir_module_loader:
+    log("neither `usermodule` or `user dir` found!")
     exit(1)
+elif module_loader and dir_module_loader:
+    log("finded both `usermodule` or `user dir`. Using files from `user dir`")
+    module_loader = dir_module_loader
 
 import usermodule as lf
 
