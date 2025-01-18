@@ -37,27 +37,27 @@ if not REDIS_INPUT_KEY:
 
 HANDLER_FUNCTION_NAME = os.getenv('HANDLER_FUNCTION_NAME', None)
 
-module_loader = importlib.util.find_spec('usermodule')
+module = importlib.import_module('usermodule')
 dir_module_loader = False
 directory_path = '/runtime/user'
 
 if os.path.isdir(directory_path):
     sys.path.append(directory_path)
-    dir_module_loader = importlib.util.find_spec('mymodule')
+    dir_module = importlib.import_module('mymodule')
 
-if not module_loader and not dir_module_loader:
+if not module and not dir_module:
     log("neither `usermodule` or `user dir` found!")
     exit(1)
-elif module_loader and dir_module_loader:
+elif module and dir_module:
     log("finded both `usermodule` or `user dir`. Using files from `user dir`")
 
-module_loader = dir_module_loader
-handler = getattr(module_loader, HANDLER_FUNCTION_NAME, None)
+module = dir_module
+handler = getattr(module, HANDLER_FUNCTION_NAME, None)
 
 if callable(handler):
     log("Environment is loaded. Starting Serverless function execution...")
 else:
-    log(f"Function '{HANDLER_FUNCTION_NAME}' not found in module '{module_loader}'.")
+    log(f"Function '{HANDLER_FUNCTION_NAME}' not found in module '{module}'.")
     exit(1)
 
 from context import Context
