@@ -29,7 +29,7 @@ def get_new_df(redis_df, last_figure):
         x = last_figure['data'][0]['x']
         x.append(datetime.strptime(redis_df['timestamp'][0], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M:%S"))
         len_to_remove = 0
-        if len(set(x)) == 101:
+        if len(set(x)) == 61:
             x = deque(x)
             value = x.popleft()
             len_to_remove = x.count(value)
