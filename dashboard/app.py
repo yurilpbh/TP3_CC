@@ -76,7 +76,7 @@ def update_metrics(n, last_figure):
     redis_df = redis_df[['percent-network-egress', 'timestamp']]
     new_df = get_new_df(redis_df, last_figure)
     
-    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot", range_y=[0,100])
     return fig
 
 
@@ -90,7 +90,7 @@ def update_metrics(n, last_figure):
     redis_df = redis_df[['percent-memory-caching', 'timestamp']]
     new_df = get_new_df(redis_df, last_figure)
 
-    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot", range_y=[0,100])
     return fig
 
 
@@ -105,7 +105,7 @@ def update_metrics(n, last_figure):
     del redis_df['percent-network-egress']
     new_df = get_new_df(redis_df, last_figure)
 
-    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot")
+    fig = px.line(new_df, x="timestamp", y="value", color="variable", title="Line Plot", range_y=[0,100])
     return fig
 
 
