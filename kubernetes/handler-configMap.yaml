@@ -5,7 +5,7 @@ metadata:
   namespace: yuripereira
 data:
   pyfile: "import statistics\n\ndef handler(input: dict, context: object) ->
-    dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(100*((input['virtual_memory-buffers']+input['virtual_memory-cached'])/input['virtual_memory-total']), 2)\n    metrics['percent-memory-caching'] = round(100*(input['net_io_counters_eth0-bytes_sent1']/(input['net_io_counters_eth0-bytes_sent1']+input['net_io_counters_eth0-bytes_recv1'])), 2)\n    metrics['timestamp'] = input['timestamp']\n    if not hasattr(context, 'monitoring_interval'):\n        avg_window = 60/5\n    else:\n
+    dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(100*((input['virtual_memory-buffers']+input['virtual_memory-cached'])/input['virtual_memory-total']), 2)\n    metrics['percent-memory-caching'] = round(100*(input['net_io_counters_eth0-bytes_sent']/(input['net_io_counters_eth0-bytes_sent']+input['net_io_counters_eth0-bytes_recv'])), 2)\n    metrics['timestamp'] = input['timestamp']\n    if not hasattr(context, 'monitoring_interval'):\n        avg_window = 60/5\n    else:\n
     \       avg_window = 60/context.monitoring_interval\n    env = context.env\n
     \   for key in input.keys():\n        if 'cpu_percent-' in key:\n            cpu_number
     = key.split('-')[1]\n            if f'cpu-window-{cpu_number}' in env:\n                env[f'cpu-window-{cpu_number}'].append(input[key])\n
