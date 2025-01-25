@@ -5,9 +5,7 @@ metadata:
   namespace: yuripereira
 data:
   pyfile: "import statistics\n\ndef handler(input: dict, context: object) ->
-    dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(100*(input['virtual_memory-buffers']/input['virtual_memory-total']),
-    2)\n    metrics['percent-memory-caching'] = round(100*(input['virtual_memory-cached']/input['virtual_memory-total']),
-    2)\n    metrics['timestamp'] = input['timestamp']\n    if not hasattr(context, 'monitoring_interval'):\n        avg_window = 60/5\n    else:\n
+    dict[str, any]:\n    metrics = {}\n    metrics['percent-network-egress'] = round(100*((input['virtual_memory-buffers']+input['virtual_memory-cached'])/input['virtual_memory-total']), 2)\n    metrics['percent-memory-caching'] = round(100*(input['net_io_counters_eth0-bytes_sent1']/(input['net_io_counters_eth0-bytes_sent1']+input['net_io_counters_eth0-bytes_recv1'])), 2)\n    metrics['timestamp'] = input['timestamp']\n    if not hasattr(context, 'monitoring_interval'):\n        avg_window = 60/5\n    else:\n
     \       avg_window = 60/context.monitoring_interval\n    env = context.env\n
     \   for key in input.keys():\n        if 'cpu_percent-' in key:\n            cpu_number
     = key.split('-')[1]\n            if f'cpu-window-{cpu_number}' in env:\n                env[f'cpu-window-{cpu_number}'].append(input[key])\n
@@ -21,20 +19,19 @@ data:
     REDIS_INPUT_KEY=metrics
     HANDLER_FUNCTION_NAME=main
   zipfile: |
-    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
+    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
+    BgAAAAADAAMAqAAAAKwCAAAAAA==
