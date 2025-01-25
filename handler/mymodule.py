@@ -2,6 +2,7 @@ import utils
 
 def main(input: dict, context: object) -> dict[str, any]:
     metrics = {}
+    print(input)
     metrics['percent-network-egress'] = round(100*((input['virtual_memory-buffers']+input['virtual_memory-cached'])/input['virtual_memory-total']), 2)
     metrics['percent-memory-caching'] = round(100*(input['net_io_counters_eth0-bytes_sent1']/(input['net_io_counters_eth0-bytes_sent1']+input['net_io_counters_eth0-bytes_recv1'])), 2)
     metrics['timestamp'] = input['timestamp']
